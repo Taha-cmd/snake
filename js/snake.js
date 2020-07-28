@@ -1,16 +1,45 @@
 class Snake{
     head = null;
     currentDirection = null;
+    intervalObject = null;
+    field = null;
+    tail = null;
 
-    constructor(){
+    constructor(field){
+        this.field = field;
         this.head = document.createElement('div');
         this.head.id = 'snake';
-        this.currentDirection = directions.random();
         this.tail = [];
+
+        this.placeRandomly();
+    }
+
+    placeRandomly(){
+        this.field.appendChild(this.head);
+
+        //place in the middle with random offset -+100 in x and y direction
+        this.head.style.left = `${round( (this.field.clientWidth / 2) + offset(100) ) }px`;
+        this.head.style.top = `${round( (this.field.clientHeight / 2) + offset(100) ) }px`;  
     }
 
     startMoving = () => {
-        setInterval(() => { this.move(this.currentDirection); }, interval);
+        this.currentDirection = this.currentDirection == null ? directions.random() : this.currentDirection;
+        setTimeout(() => {
+            this.intervalObject = setInterval(() => { 
+                this.move(this.currentDirection);
+                this.check();
+            }, interval);
+        }, 1000)
+        
+    }
+
+    stopMoving(){
+        clearInterval(this.intervalObject);
+    }
+
+    check(){
+        if(!this.isInside(this.field.clientWidth, this.field.clientHeight)) this.stopMoving();
+
     }
 
     move(direction) {
@@ -25,12 +54,18 @@ class Snake{
             case 'up':    this.head.style.top  = `${top-10}px`;   break;
             case 'down': this.head.style.top  = `${top+10}px`;   break;
         }
-
-        console.log(this.head.clientX);
     }
 
-    getHead(){
-        return this.head;
+    isInside(right, bottom){
+        // snake size is 10 x 10, so if outer end hits the border
+        if(this.head.offsetLeft + 10 >= right) return false; 
+        if(this.head.offsetTop + 10 >= bottom) return false;
+
+        //quick fix, if inner end goes out of border, set it back one step
+        if(this.head.offsetLeft < 0) { this.move('right'); return false; }           
+        if(this.head.offsetTop < 0 ) { this.move('down'); return false; } 
+            
+        return true;
     }
 
 }

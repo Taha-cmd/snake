@@ -1,5 +1,4 @@
-const field = new Field(document.getElementById('field'));
-const snake = new Snake();
+const snake = new Snake(field);
 
 window.addEventListener('keyup', (e) => {
     const direction = e.key;
@@ -14,11 +13,12 @@ window.addEventListener('keyup', (e) => {
         snake.currentDirection = 'left';
 })
 
-field.place(snake);
+snake.startMoving();
 
 function start(){
     
     snake.startMoving();
-}
+} 
+
 
 
