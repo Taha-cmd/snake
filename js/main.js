@@ -13,7 +13,15 @@ window.addEventListener('keyup', (e) => {
         snake.currentDirection = 'left';
 })
 
+buttons.forEach((button) => button.addEventListener('click', (e) => { 
+    const keyup = new Event('keyup');
+    keyup.key = e.target.getAttribute('value');
+    window.dispatchEvent(keyup);
+}));
+
 snake.startMoving();
+
+
 
 function start(){
     

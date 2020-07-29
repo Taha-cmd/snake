@@ -1,4 +1,4 @@
-class Snake{
+class Snake {
     head = null;
     currentDirection = null;
     intervalObject = null;
@@ -27,22 +27,21 @@ class Snake{
         setTimeout(() => {
             this.intervalObject = setInterval(() => { 
                 this.move(this.currentDirection);
-                this.check();
+                this.control();
             }, interval);
         }, 1000)
-        
     }
 
     stopMoving(){
         clearInterval(this.intervalObject);
     }
 
-    check(){
+    control(){
         if(!this.isInside(this.field.clientWidth, this.field.clientHeight)) this.stopMoving();
 
     }
 
-    move(direction) {
+    move(direction){
         const properties = window.getComputedStyle(this.head);
         const top = parseInt(properties.top, 10);
         const left = parseInt(properties.left, 10);
@@ -51,8 +50,8 @@ class Snake{
         {
             case 'left':   this.head.style.left = `${left-10}px`;  break;
             case 'right':  this.head.style.left = `${left+10}px`;  break;
-            case 'up':    this.head.style.top  = `${top-10}px`;   break;
-            case 'down': this.head.style.top  = `${top+10}px`;   break;
+            case 'up':     this.head.style.top  = `${top-10}px`;   break;
+            case 'down':   this.head.style.top  = `${top+10}px`;   break;
         }
     }
 
@@ -67,5 +66,4 @@ class Snake{
             
         return true;
     }
-
 }

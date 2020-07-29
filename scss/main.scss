@@ -3,7 +3,7 @@ body{
 }
 
 #field{
-    margin: 5rem;
+    margin: 1rem 5rem;
     width: 80%;
     height: 500px;
     border: solid 5px black;
@@ -38,3 +38,15 @@ body{
     height: 1000px;
     width: 5px;
 }
+
+.arrow{
+    padding: 0.5rem;
+    font-size: 3rem;
+    display: none;
+}
+
+@media only screen and (max-width: 768px) {
+    .arrow{
+        display: inline;
+    }
+  }
