@@ -1,23 +1,25 @@
+"use strict";
 class Snake {
     head = null;
     currentDirection = null;
     intervalObject = null;
     field = null;
     tail = null;
+    food = null;
 
-    constructor(field){
+    constructor(field, food){
         this.field = field;
+        this.food = food;
         this.head = document.createElement('div');
         this.head.id = 'snake';
         this.tail = [];
-
-        this.placeRandomly();
     }
 
     placeRandomly(){
         this.field.appendChild(this.head);
 
         //place in the middle with random offset -+100 in x and y direction
+        console.log(this.field.clientHeight);
         this.head.style.left = `${round( (this.field.clientWidth / 2) + offset(100) ) }px`;
         this.head.style.top = `${round( (this.field.clientHeight / 2) + offset(100) ) }px`;  
     }
@@ -28,17 +30,29 @@ class Snake {
             this.intervalObject = setInterval(() => { 
                 this.move(this.currentDirection);
                 this.control();
-            }, interval);
+            }, currentLevel.interval);
         }, 1000)
     }
 
     stopMoving(){
         clearInterval(this.intervalObject);
+        endGame();
     }
 
     control(){
         if(!this.isInside(this.field.clientWidth, this.field.clientHeight)) this.stopMoving();
+        if(this.atFood()) this.eat();
+    }
 
+    atFood(){
+        return parseInt(this.head.style.left) === parseInt(this.food.food.style.left)
+            && parseInt(this.head.style.top) === parseInt(this.food.food.style.top);
+    }
+
+    eat(){
+        updateScore();
+        this.animate();
+        this.food.spawn();
     }
 
     move(direction){
@@ -65,5 +79,12 @@ class Snake {
         if(this.head.offsetTop < 0 ) { this.move('down'); return false; } 
             
         return true;
+    }
+
+    animate(){
+        this.head.style.animation = 'animate 1s';
+        setTimeout(() => {
+            this.head.style.animation = '';
+        }, 1000);
     }
 }

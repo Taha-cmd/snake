@@ -14,30 +14,54 @@
 </head>
 
 <body>
-    <!--<div id="h"></div>
-    <div id="w"></div> -->
 
-
-    <div id="field" class="container d-flex mx-auto">
-
+    <div id="menu">
+        <h1 class="text-center my-5">Choose Difficulty Level</h1>
+        <div class="d-flex justify-content-center">
+            <div class="btn-group">
+                <button index="0" type="button" class="btn btn-secondary btn-lg level-selector">1</button>
+                <button index="1" type="button" class="btn btn-secondary btn-lg level-selector">2</button>
+                <button index="2" type="button" class="btn btn-secondary btn-lg level-selector">3</button>
+                <button index="3" type="button" class="btn btn-secondary btn-lg level-selector">4</button>
+                <button index="4" type="button" class="btn btn-secondary btn-lg level-selector">5</button>
+            </div>
+        </div>
     </div>
 
-    <div id="buttons" class="d-flex justify-content-center flex-column">
-        <div class="text-center">
-            <i value="ArrowUp" class="far fa-arrow-alt-circle-up arrow"></i>
+    <div id="game">
+        <h1 class="text-center">Score: <span id="score">0</span></h1>
+
+        <div id="field" class="container d-flex mx-auto">
+
         </div>
 
-        <div class="text-center"> 
-            <i value="ArrowLeft" class="fas fa-arrow-circle-left arrow mr-3"></i>
-            <i value="ArrowRight" class="fas fa-arrow-circle-right arrow ml-3"></i>
-        </div>
+        <div id="buttons" class="d-flex justify-content-center flex-column">
+            <div class="text-center">
+                <i value="ArrowUp" class="far fa-arrow-alt-circle-up arrow"></i>
+            </div>
 
-        <div class="text-center">
-            <i value="ArrowDown" class="far fa-arrow-alt-circle-down arrow"></i>
-        </div>
+            <div class="text-center"> 
+                <i value="ArrowLeft" class="fas fa-arrow-circle-left arrow mr-3"></i>
+                <i value="ArrowRight" class="fas fa-arrow-circle-right arrow ml-3"></i>
+            </div>
 
+            <div class="text-center">
+                <i value="ArrowDown" class="far fa-arrow-alt-circle-down arrow"></i>
+            </div>
+
+        </div>
     </div>
 
+    <div id="modal">
+        <div id="modalContent" class="d-flex justify-content-center flex-column">
+            <p class="text-center">OOOPS, Looks like you lost</p>
+            <p class="text-center">Reached Score: <span id="reachedScore">bla bla</span></p>
+            <button class="btn btn-success d-flex justify-content-center" id="restart">Play again</button>
+        </div>
+    </div>
+
+    
+      
     
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
@@ -45,6 +69,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src="js/setup.js"></script>
     <script src="js/utilities.js"></script>
+    <script src="js/food.js"></script>
+    <script src="js/dom.js"></script>
     <script src="js/snake.js"></script>
     <script src="js/main.js"></script>
 </body>
