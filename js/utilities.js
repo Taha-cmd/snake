@@ -11,5 +11,15 @@ function randomBetween(min, max){
     return Math.floor(Math.random() * (max - min) ) + min;
 }
 
+function invert(direction){
+    switch(direction)
+    {
+        case 'left':    return 'right';
+        case 'right':   return 'left';
+        case 'up':      return 'down';
+        case 'down':    return 'up';
+    }
+}
+
 
 

@@ -42,6 +42,10 @@ function startGame(){
 function endGame(){
     game.style.display = 'none';
     menu.style.display = 'block';
+
+     //remove tail divs from dom
+    snake.tail.forEach((tailChunk) => tailChunk.remove());
+    snake.tail = [];
     
     openModal();
 }

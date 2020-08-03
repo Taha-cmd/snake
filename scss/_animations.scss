@@ -1,4 +1,4 @@
-@keyframes animate{
+@keyframes animateOnEat{
     0%   { transform: scale(1); background-color: red; }
     10%  { transform: scale(1.1); }
     20%  { transform: scale(1.2); }
@@ -10,4 +10,18 @@
     80%  { transform: scale(1.2); }
     90%  { transform: scale(1.1); }
     100% { transform: scale(1);  background-color: red;}
+}
+
+@keyframes animateOnDeath{
+    0%   { transform: scale(1);   background-color: red; }
+    10%  { transform: scale(1.5); background-color: blue;}
+    20%  { transform: scale(1);   background-color: red; }
+    30%  { transform: scale(1.5); background-color: blue;}
+    40%  { transform: scale(1);   background-color: red; }
+    50%  { transform: scale(1.5); background-color: blue;}
+    60%  { transform: scale(1);   background-color: red; }
+    70%  { transform: scale(1.5); background-color: blue;}
+    80%  { transform: scale(1);   background-color: red; }
+    90%  { transform: scale(1.5); background-color: blue;}
+    100% { transform: scale(1);   background-color: red;}
 }

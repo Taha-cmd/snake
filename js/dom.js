@@ -14,3 +14,10 @@ function closeModal(){
     scoreDisplay.innerHTML = '0';
     reachedScore.innerHTML = '0';
 }
+
+function makeTailChunk(){
+    let tailChunk = document.createElement('div');
+    tailChunk.setAttribute('class', 'tail');
+
+    return tailChunk;
+}

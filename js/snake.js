@@ -1,11 +1,11 @@
 "use strict";
 class Snake {
-    head = null;
-    currentDirection = null;
-    intervalObject = null;
-    field = null;
-    tail = null;
-    food = null;
+    head                = null;
+    currentDirection    = null;
+    intervalObject      = null;
+    field               = null;
+    tail                = null;
+    food                = null;
 
     constructor(field, food){
         this.field = field;
@@ -19,7 +19,6 @@ class Snake {
         this.field.appendChild(this.head);
 
         //place in the middle with random offset -+100 in x and y direction
-        console.log(this.field.clientHeight);
         this.head.style.left = `${round( (this.field.clientWidth / 2) + offset(100) ) }px`;
         this.head.style.top = `${round( (this.field.clientHeight / 2) + offset(100) ) }px`;  
     }
@@ -36,37 +35,109 @@ class Snake {
 
     stopMoving(){
         clearInterval(this.intervalObject);
-        endGame();
+        this.animate('die');
+        setTimeout(() => {
+            endGame();
+        }, 1000)
     }
 
     control(){
-        if(!this.isInside(this.field.clientWidth, this.field.clientHeight)) this.stopMoving();
-        if(this.atFood()) this.eat();
+        if(!this.isInside(this.field.clientWidth, this.field.clientHeight) || this.onTail())
+            this.stopMoving();
+
+        if(this.onFood()) 
+            this.eat();
     }
 
-    atFood(){
+    onFood(){
         return parseInt(this.head.style.left) === parseInt(this.food.food.style.left)
             && parseInt(this.head.style.top) === parseInt(this.food.food.style.top);
     }
 
     eat(){
         updateScore();
-        this.animate();
+        this.animate('eat');
+        this.grow();
         this.food.spawn();
     }
 
-    move(direction){
+    grow(){
+        const chunk = makeTailChunk();
+        this.tail.push(chunk);
+
+        const properties  = this.tail.length === 1 ?
+            window.getComputedStyle(this.head) : 
+            window.getComputedStyle(this.tail[this.tail.length - 2]);
+
+        const top = parseInt(properties.top, 10);
+        const left = parseInt(properties.left, 10);
+
+        let offsetTop = 0;
+        let offsetLeft = 0;
+
+        switch(this.currentDirection)
+        {
+            case 'left':    offsetLeft = 10;    break;
+            case 'right':   offsetLeft = -10;   break;
+            case 'up':      offsetTop = 10;     break;
+            case 'down':    offsetTop = -10;    break;
+        }
+
+        chunk.style.top = `${top + offsetTop}px`;
+        chunk.style.left = `${left + offsetLeft}px`;
+
+        this.field.appendChild(chunk);
+    }
+
+    onTail(){
         const properties = window.getComputedStyle(this.head);
         const top = parseInt(properties.top, 10);
         const left = parseInt(properties.left, 10);
 
+        return this.tail.some((chunk) => {
+            return top === parseInt(chunk.style.top) && left === parseInt(chunk.style.left);
+        });
+    }
+
+    move(direction)
+    {
+        const properties = window.getComputedStyle(this.head);
+        const currentTop = parseInt(properties.top, 10);
+        const currentLeft = parseInt(properties.left, 10);
+        
         switch(direction)
         {
-            case 'left':   this.head.style.left = `${left-10}px`;  break;
-            case 'right':  this.head.style.left = `${left+10}px`;  break;
-            case 'up':     this.head.style.top  = `${top-10}px`;   break;
-            case 'down':   this.head.style.top  = `${top+10}px`;   break;
+            case 'left':   this.head.style.left = `${currentLeft - 10}px`;  break;
+            case 'right':  this.head.style.left = `${currentLeft + 10}px`;  break;
+            case 'up':     this.head.style.top  = `${currentTop - 10}px`;   break;
+            case 'down':   this.head.style.top  = `${currentTop + 10}px`;   break;
         }
+        // move head from currentTop and currentLeft offsets
+
+        let newTop  = null;
+        let newLeft = null;
+        let oldTop  = null;
+        let oldLeft = null;
+
+        this.tail.forEach((chunk, index) => {
+            const chunkProperties = window.getComputedStyle(chunk);
+
+            newTop = index === 0 ? currentTop : oldTop;
+            newLeft = index === 0 ? currentLeft : oldLeft;
+            oldTop = parseInt(chunkProperties.top, 10); // for next itr
+            oldLeft = parseInt(chunkProperties.left, 10); // for next itr
+
+            chunk.style.top = `${newTop}px`;
+            chunk.style.left = `${newLeft}px`;
+
+
+        });
+
+            // if it is the first element (index === 0), follow the head
+            // => change position to the old head's position
+            // => else follow the position of the old element
+            // the position of the current element will be saved
+            // but used in the next iteration (so it is the old element)
     }
 
     isInside(right, bottom){
@@ -81,8 +152,13 @@ class Snake {
         return true;
     }
 
-    animate(){
-        this.head.style.animation = 'animate 1s';
+    animate(type){
+        switch(type)
+        {
+            case 'eat': this.head.style.animation = 'animateOnEat 1s';      break;
+            case 'die': this.head.style.animation = 'animateOnDeath 1s';    break;
+        }
+    
         setTimeout(() => {
             this.head.style.animation = '';
         }, 1000);
