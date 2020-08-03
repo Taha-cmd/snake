@@ -1,4 +1,5 @@
 "use strict";
+
 class Snake {
     head                = null;
     currentDirection    = null;
@@ -8,19 +9,20 @@ class Snake {
     food                = null;
 
     constructor(field, food){
-        this.field = field;
-        this.food = food;
-        this.head = document.createElement('div');
-        this.head.id = 'snake';
-        this.tail = [];
+        this.field      = field;
+        this.food       = food;
+        this.head       = document.createElement('div');
+        this.head.id    = 'snake';
+        this.tail       = [];
     }
 
     placeRandomly(){
         this.field.appendChild(this.head);
+        const css = getCSS(this.field);
 
         //place in the middle with random offset -+100 in x and y direction
-        this.head.style.left = `${round( (this.field.clientWidth / 2) + offset(100) ) }px`;
-        this.head.style.top = `${round( (this.field.clientHeight / 2) + offset(100) ) }px`;  
+        this.head.style.left = `${round( (css.width / 2) + offset(100) ) }px`;
+        this.head.style.top = `${round( (css.height / 2) + offset(100) ) }px`;  
     }
 
     startMoving = () => {
@@ -28,9 +30,15 @@ class Snake {
         setTimeout(() => {
             this.intervalObject = setInterval(() => { 
                 this.move(this.currentDirection);
-                this.control();
+                const css = getCSS(this.field);
+                if(!this.isInside(css.width, css.height) || this.onTail()) 
+                    this.stopMoving();
+
+                if(this.onFood())
+                    this.eat();
+
             }, currentLevel.interval);
-        }, 1000)
+        }, 1000);
     }
 
     stopMoving(){
@@ -41,17 +49,11 @@ class Snake {
         }, 1000)
     }
 
-    control(){
-        if(!this.isInside(this.field.clientWidth, this.field.clientHeight) || this.onTail())
-            this.stopMoving();
-
-        if(this.onFood()) 
-            this.eat();
-    }
-
     onFood(){
-        return parseInt(this.head.style.left) === parseInt(this.food.food.style.left)
-            && parseInt(this.head.style.top) === parseInt(this.food.food.style.top);
+        const head = getCSS(this.head);
+        const food = getCSS(this.food.food);
+
+        return head.left === food.left && head.top  === food.top;
     }
 
     eat(){
@@ -65,12 +67,8 @@ class Snake {
         const chunk = makeTailChunk();
         this.tail.push(chunk);
 
-        const properties  = this.tail.length === 1 ?
-            window.getComputedStyle(this.head) : 
-            window.getComputedStyle(this.tail[this.tail.length - 2]);
-
-        const top = parseInt(properties.top, 10);
-        const left = parseInt(properties.left, 10);
+        const css  = this.tail.length === 1 ?
+            getCSS(this.head) : getCSS(this.tail[this.tail.length - 2]);
 
         let offsetTop = 0;
         let offsetLeft = 0;
@@ -83,34 +81,30 @@ class Snake {
             case 'down':    offsetTop = -10;    break;
         }
 
-        chunk.style.top = `${top + offsetTop}px`;
-        chunk.style.left = `${left + offsetLeft}px`;
+        chunk.style.top = `${css.top + offsetTop}px`;
+        chunk.style.left = `${css.left + offsetLeft}px`;
 
         this.field.appendChild(chunk);
     }
 
     onTail(){
-        const properties = window.getComputedStyle(this.head);
-        const top = parseInt(properties.top, 10);
-        const left = parseInt(properties.left, 10);
+        const head = getCSS(this.head);
 
         return this.tail.some((chunk) => {
-            return top === parseInt(chunk.style.top) && left === parseInt(chunk.style.left);
-        });
+            return head.top  === parseInt(chunk.style.top)
+                && head.left === parseInt(chunk.style.left);
+        }); 
     }
 
     move(direction)
     {
-        const properties = window.getComputedStyle(this.head);
-        const currentTop = parseInt(properties.top, 10);
-        const currentLeft = parseInt(properties.left, 10);
-        
+        const css = getCSS(this.head);      
         switch(direction)
         {
-            case 'left':   this.head.style.left = `${currentLeft - 10}px`;  break;
-            case 'right':  this.head.style.left = `${currentLeft + 10}px`;  break;
-            case 'up':     this.head.style.top  = `${currentTop - 10}px`;   break;
-            case 'down':   this.head.style.top  = `${currentTop + 10}px`;   break;
+            case 'left':   this.head.style.left = `${css.left - 10}px`;  break;
+            case 'right':  this.head.style.left = `${css.left + 10}px`;  break;
+            case 'up':     this.head.style.top  = `${css.top - 10}px`;   break;
+            case 'down':   this.head.style.top  = `${css.top + 10}px`;   break;
         }
         // move head from currentTop and currentLeft offsets
 
@@ -120,12 +114,12 @@ class Snake {
         let oldLeft = null;
 
         this.tail.forEach((chunk, index) => {
-            const chunkProperties = window.getComputedStyle(chunk);
+            const chunkCSS = getCSS(chunk);
 
-            newTop = index === 0 ? currentTop : oldTop;
-            newLeft = index === 0 ? currentLeft : oldLeft;
-            oldTop = parseInt(chunkProperties.top, 10); // for next itr
-            oldLeft = parseInt(chunkProperties.left, 10); // for next itr
+            newTop = index === 0 ? css.top : oldTop;
+            newLeft = index === 0 ? css.left : oldLeft;
+            oldTop = chunkCSS.top; // for next itr
+            oldLeft = chunkCSS.left; // for next itr
 
             chunk.style.top = `${newTop}px`;
             chunk.style.left = `${newLeft}px`;

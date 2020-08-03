@@ -1,3 +1,5 @@
+"use strict";
+
 class Food {
     field = null;
     food = null;
@@ -10,7 +12,9 @@ class Food {
     }
 
     spawn(){
-        this.food.style.top = `${round( randomBetween(0, this.field.clientHeight - 10) )}px`;
-        this.food.style.left = `${round( randomBetween(0, this.field.clientWidth - 10) )}px`;
+        const css = getCSS(this.field);
+
+        this.food.style.top = `${round( randomBetween(0, css.height - 10) )}px`;
+        this.food.style.left = `${round( randomBetween(0, css.width - 10) )}px`;
     }
 }

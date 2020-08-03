@@ -1,3 +1,5 @@
+"use strict";
+
 function updateScore(){
     score += currentLevel.points;
     scoreDisplay.innerHTML = score;

@@ -1,3 +1,5 @@
+"use strict";
+
 const food = new Food(field);
 const snake = new Snake(field, food);
 
