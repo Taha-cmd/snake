@@ -1,6 +1,6 @@
 "use strict";
 
-import { offset, round } from '/js/modules/utilities.js';
+import { offset, round, getCSS } from '/js/modules/utilities.js';
 import { updateScore } from '/js/modules/dom.js';
 
 export class Snake {
