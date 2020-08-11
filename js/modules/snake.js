@@ -1,5 +1,9 @@
 "use strict";
-class Snake {
+
+import { offset, round } from '/js/modules/utilities.js';
+import { updateScore } from '/js/modules/dom.js';
+
+export class Snake {
     head                = null;
     currentDirection    = null;
     intervalObject      = null;
@@ -37,7 +41,7 @@ class Snake {
         clearInterval(this.intervalObject);
         this.animate('die');
         setTimeout(() => {
-            endGame();
+            window.dispatchEvent(new Event('endGame'));
         }, 1000)
     }
 
@@ -62,7 +66,7 @@ class Snake {
     }
 
     grow(){
-        const chunk = makeTailChunk();
+        const chunk = this.makeTailChunk();
         this.tail.push(chunk);
 
         const properties  = this.tail.length === 1 ?
@@ -162,5 +166,12 @@ class Snake {
         setTimeout(() => {
             this.head.style.animation = '';
         }, 1000);
+    }
+
+    makeTailChunk(){
+        let tailChunk = document.createElement('div');
+        tailChunk.setAttribute('class', 'tail');
+    
+        return tailChunk;
     }
 }

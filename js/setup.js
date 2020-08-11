@@ -1,3 +1,5 @@
+"use strict";
+
 const game              =    document.getElementById('game');
 const menu              =    document.getElementById('menu');
 const field             =    document.getElementById('field');
