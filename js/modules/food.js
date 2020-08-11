@@ -1,6 +1,8 @@
 "use strict";
 
-class Food {
+import {round, randomBetween, getCSS} from '/js/modules/utilities.js';
+
+export class Food {
     field = null;
     food = null;
 

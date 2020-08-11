@@ -1,5 +1,9 @@
 "use strict";
 
+import {Food} from '/js/modules/food.js';
+import {Snake} from '/js/modules/snake.js';
+import {openModal, closeModal} from '/js/modules/dom.js';
+
 const food = new Food(field);
 const snake = new Snake(field, food);
 
@@ -25,23 +29,23 @@ buttons.forEach((button) => button.addEventListener('click', (e) => {
 levelSelectors.forEach((selector) => selector.addEventListener('click', (e) => {
     const index = parseInt(e.target.getAttribute('index'));
     currentLevel = levels[index];
-    startGame();
+    window.dispatchEvent(new Event('startGame'));
 }));
 
 restartButton.addEventListener('click', (e) => {
     closeModal();
 });
 
-function startGame(){
+window.addEventListener('startGame', () => {
     game.style.display = 'block';
     menu.style.display = 'none';
 
     food.spawn();
     snake.placeRandomly();
     snake.startMoving();
-}
+})
 
-function endGame(){
+window.addEventListener('endGame', () => {
     game.style.display = 'none';
     menu.style.display = 'block';
 
@@ -50,7 +54,8 @@ function endGame(){
     snake.tail = [];
     
     openModal();
-}
+});
+
 
 
 
