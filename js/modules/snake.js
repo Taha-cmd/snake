@@ -21,11 +21,11 @@ export class Snake {
 
     placeRandomly(){
         this.field.appendChild(this.head);
-        const css = getCSS(this.field);
+        const { width, height } = getCSS(this.field);
 
         //place in the middle with random offset -+100 in x and y direction
-        this.head.style.left = `${round( (css.width / 2) + offset(100) ) }px`;
-        this.head.style.top = `${round( (css.height / 2) + offset(100) ) }px`;  
+        this.head.style.left = `${round( (width / 2) + offset(100) ) }px`;
+        this.head.style.top = `${round( (height / 2) + offset(100) ) }px`;  
     }
 
     startMoving = () => {
@@ -33,8 +33,7 @@ export class Snake {
         setTimeout(() => {
             this.intervalObject = setInterval(() => { 
                 this.move(this.currentDirection);
-                const css = getCSS(this.field);
-                if(!this.isInside(css.width, css.height) || this.onTail()) 
+                if(!this.isInside(getCSS(this.field)) || this.onTail()) 
                     this.stopMoving();
 
                 if(this.onFood())
@@ -70,7 +69,7 @@ export class Snake {
         const chunk = this.makeTailChunk();
         this.tail.push(chunk);
 
-        const css  = this.tail.length === 1 ?
+        const { top, left }  = this.tail.length === 1 ?
             getCSS(this.head) : getCSS(this.tail[this.tail.length - 2]);
 
         let offsetTop = 0;
@@ -84,30 +83,30 @@ export class Snake {
             case 'down':    offsetTop = -10;    break;
         }
 
-        chunk.style.top = `${css.top + offsetTop}px`;
-        chunk.style.left = `${css.left + offsetLeft}px`;
+        chunk.style.top = `${top + offsetTop}px`;
+        chunk.style.left = `${left + offsetLeft}px`;
 
         this.field.appendChild(chunk);
     }
 
     onTail(){
-        const head = getCSS(this.head);
+        const { top, left } = getCSS(this.head);
 
         return this.tail.some((chunk) => {
-            return head.top  === parseInt(chunk.style.top)
-                && head.left === parseInt(chunk.style.left);
+            return top  === parseInt(chunk.style.top)
+                && left === parseInt(chunk.style.left);
         }); 
     }
 
     move(direction)
     {
-        const css = getCSS(this.head);      
+        const { top, left } = getCSS(this.head);      
         switch(direction)
         {
-            case 'left':   this.head.style.left = `${css.left - 10}px`;  break;
-            case 'right':  this.head.style.left = `${css.left + 10}px`;  break;
-            case 'up':     this.head.style.top  = `${css.top - 10}px`;   break;
-            case 'down':   this.head.style.top  = `${css.top + 10}px`;   break;
+            case 'left':   this.head.style.left = `${left - 10}px`;  break;
+            case 'right':  this.head.style.left = `${left + 10}px`;  break;
+            case 'up':     this.head.style.top  = `${top - 10}px`;   break;
+            case 'down':   this.head.style.top  = `${top + 10}px`;   break;
         }
         // move head from currentTop and currentLeft offsets
 
@@ -119,8 +118,8 @@ export class Snake {
         this.tail.forEach((chunk, index) => {
             const chunkCSS = getCSS(chunk);
 
-            newTop = index === 0 ? css.top : oldTop;
-            newLeft = index === 0 ? css.left : oldLeft;
+            newTop = index === 0 ? top : oldTop;
+            newLeft = index === 0 ? left : oldLeft;
             oldTop = chunkCSS.top; // for next itr
             oldLeft = chunkCSS.left; // for next itr
 
@@ -137,10 +136,10 @@ export class Snake {
             // but used in the next iteration (so it is the old element)
     }
 
-    isInside(right, bottom){
+    isInside({ height, width }){
         // snake size is 10 x 10, so if outer end hits the border
-        if(this.head.offsetLeft + 10 >= right) return false; 
-        if(this.head.offsetTop + 10 >= bottom) return false;
+        if(this.head.offsetLeft + 10 >= width) return false; 
+        if(this.head.offsetTop + 10 >= height) return false;
 
         //quick fix, if inner end goes out of border, set it back one step
         if(this.head.offsetLeft < 0) { this.move('right'); return false; }           
